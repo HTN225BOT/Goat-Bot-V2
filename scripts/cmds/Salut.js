@@ -2,7 +2,7 @@ module.exports = {
     config: {
         name: "salut",
         version: "1.0",
-        author: "ཋྀɞHaïtanįɞ く命ཋྀ༅ ✨",
+        author: "HAMED JUNIOR 🎶",
         countDown: 5,
         role: 0,
         shortDescription: "sarcasm",
@@ -15,6 +15,6 @@ onChat: async function({
     message,
     getLang
 }) {
-    if (event.body && event.body.toLowerCase() == "salut") return message.reply("Salut mon pote ☺️ moi c'est 💀☄️GHOST👻 si t'as un problème n'hésite pas à me voir 😸 ta satisfaction est ma priorité absolue ✨💜☄️");
+    if (event.body && event.body.toLowerCase() == "salut") return message.reply("𝐲𝐨, 𝐜'𝐞𝐬𝐭 𝐜𝐨𝐦𝐦𝐞𝐧𝐭, 𝐦𝐨𝐢 𝐣𝐞 𝐬𝐮𝐢𝐬 𝐭𝐨𝐧 𝐚𝐬𝐬𝐢𝐬𝐭𝐚𝐧𝐭 𝐯𝐢𝐫𝐭𝐮𝐞𝐥 𝐭𝐮 𝐚𝐬 𝐝𝐞𝐬 𝐪𝐮𝐞𝐬𝐭𝐢𝐨𝐧𝐬 𝐧'𝐡𝐞́𝐬𝐢𝐭𝐞𝐳 𝐩𝐚𝐬 😉");
 }
 };

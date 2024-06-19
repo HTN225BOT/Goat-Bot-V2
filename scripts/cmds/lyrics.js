@@ -1,23 +1,43 @@
+const axios = require("axios");
+
 module.exports = {
-  config: { name: 'lyrics', author: 'Jun', countDown: 5, role: 0, category: 'media', shortDescription: { en: 'sends lyrics to chat' } },
-  onStart: async function({ api, event, args }) {
-    try {
-      const axios = require("axios");
-      const title = args.join(" ");
-      if (!title) {
-        api.sendMessage('Please provide a song name.', event.threadID, event.messageID);
-        return;
-      }
-      const res = await axios.get(`https://api-test.yourboss12.repl.co/api/lyrics?title=${title}`);
-      const { songTitle, artist, lyrics, image } = res.data;
-      const attachment = [await global.utils.getStreamFromURL(image)];
-      const message = `title: ${title}\nartist: ${artist}\n\n\n${lyrics}`;
-      api.setMessageReaction("🎧", event.messageID, event.messageID, api); 
-      api.sendMessage('searching for lyrics, please wait...', event.threadID, event.messageID); 
-      api.sendMessage({ attachment, body: message }, event.threadID, event.messageID);
-    } catch (error) {
-      console.error(error);
-      api.sendMessage('Error occurred.', event.threadID, event.messageID);
-    }
-  }
+ config: {
+ name: "lyrics",
+ version: "1.0",
+ author: "modified by yukinori",
+ countDown: 5,
+ role: 0,
+ shortDescription: {
+ en: "Get lyrics for a song",
+ },
+ longDescription: {
+ en: "This command allows you to get the lyrics for a song. Usage: !lyrics <song name>",
+ },
+ category: "music",
+ guide: {
+ en: "{prefix}lyrics <song name>",
+ },
+ },
+
+ onStart: async function ({ api, event, args }) {
+ const songName = args.join(" ");
+ if (!songName) {
+ api.sendMessage("Please provide a song name!", event.threadID, event.messageID);
+ return;
+ }
+
+ const apiUrl = `https://lyrist.vercel.app/api/${encodeURIComponent(songName)}`;
+ try {
+ const response = await axios.get(apiUrl);
+ const lyrics = response.data.lyrics;
+ if (!lyrics) {
+ api.sendMessage("Sorry, lyrics not found!", event.threadID, event.messageID);
+ return;
+ }
+ api.sendMessage(lyrics, event.threadID, event.messageID);
+ } catch (error) {
+ console.error(error);
+ api.sendMessage("Sorry, there was an error getting the lyrics!", event.threadID, event.messageID);
+ }
+ },
 };

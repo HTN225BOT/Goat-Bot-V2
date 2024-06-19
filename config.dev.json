@@ -5,7 +5,7 @@
     "2FASecret": "",
     "i_user": "",
     "proxy": null,
-    "userAgent": "Mozilla/5.0 (Linux; Android 12; M2102J20SG) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Mobile Safari/537.36",
+    "userAgent": "Mozilla/5.0 (Samsung ; Android 14; M2102J20SG) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Mobile Safari/537.36",
     "intervalGetNewCookie": 1440,
     "notes": "time the system a utomatically retrieves new cookies from email/password, unit is minute, if you set null, the system will not automatically retrieve new cookies, it saves you from having to manually change your cookie every time it expires. recommended set to 1440 (1day) or 4320 (3day).TO BE ABLE TO USE THIS FEATURE YOU NEED TO ENTER THE ACCOUNT PASSWORD ABOVE"
   },
@@ -17,14 +17,14 @@
     "ignoreCommand": []
   },
   "adminBot": [
-    "61551808319261","61553425987326"
+    "61551808319261","pour"
   ],
   "whiteListMode": {
     "enable": false,
     "whiteListIds": [],
     "notes": "if you enable this feature, only the ids in the whiteListIds section can use the bot"
   },
-  "nickNameBot": "𓆩✰..𝗬𝗔𝗡-𝗦𝗛𝗜..✰‣᭄𓆪🔥",
+  "nickNameBot": "𝗷𝗲 𝗻𝗮𝘃𝗶𝗴𝘂𝗲 𝗲𝗻𝘁𝗿𝗲 𝗹𝗲 𝗠𝗮𝗹 𝗲𝘁 𝗹𝗲 𝗯𝗶𝗲𝗻 😈 𝗲𝘁 😇",
   "prefix": "-",
   "database": {
     "type": "sqlite",
@@ -33,7 +33,7 @@
     "autoRefreshThreadInfoFirstTime": true,
     "notes": "(1) type selects 'json' or 'sqlite' or 'mongodb'. If you choose mongodb, enter uri connect mongodb in the uriMongodb section, instructions to get uri connect mongodb at: https://youtu.be/z1f9urHW5xY. I recommend using 'mongodb' or 'sqlite', json is not recommended because it is not stable. (2) when you set autoSyncWhenStart to true, the bot will automatically synchronize the data in the database when starting the bot, this will make the bot start slower. (3) when you set autoRefreshThreadInfoFirstTime to true, the bot will automatically refresh the thread information when get first message from the thread since starting the bot"
   },
-  "timeZone": "Africa/Abidjan",
+  "timeZone": "Africa/côte d'ivoire",
   "credentials": {
     "gmailAccount": {
       "email": "",

@@ -1,58 +1,47 @@
-const axios = require('axios');
-const cheerio = require('cheerio');
+const axios = require("axios");
 
-module.exports.config = {
-  name: 'Lyrics',
-  version: '1.0.0',
-  hasPermssion: 0,
-  credits: 'August Quinn',
-  description: 'Get song lyrics from Google or Musixmatch.',
-  commandCategory: 'Music',
-  usages: '/Lyrics [song name]',
-  cooldowns: 5,
-};
+module.exports = {
+  config: {
+    name: "lyrics2",
+    version: "1.0",
+    author: "Aryan Chauhan",
+    countDown: 0,
+    role: 0,
+    shortDescription: {
+      en: "Get lyrics for a song",
+    },
+    longDescription: {
+      en: "This command allows you to get the lyrics for a song. Usage: !lyrics <song name>",
+    },
+    category: "music",
+    guide: {
+      en: "{p}{n} <song name>",
+    },
+  },
 
-module.exports.run = async function ({ api, event, args }) {
-  const { threadID, messageID } = event;
-  const query = args.join(' ');
-
-  if (!query) {
-    api.sendMessage('Please provide a song name to get lyrics.', threadID, messageID);
-    return;
-  }
-
-  try {
-    const headers = { 'User-Agent': 'Mozilla/5.0' };
-    const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(query.replace(' ', '+'))}+lyrics`;
-    const googleResponse = await axios.get(googleUrl, { headers });
-    const $ = cheerio.load(googleResponse.data);
-    const data = $('div[data-lyricid]');
-    
-    if (data.length > 0) {
-      const content = data.html().replace('</span></div><div.*?>', '\n</span>');
-      const parse = cheerio.load(content);
-      const lyrics = parse('span[jsname]').text();
-      const author = $('div.auw0zb').text();
-      
-      api.sendMessage(`🎵 𝗟𝗬𝗥𝗜𝗖𝗦:\n\n${lyrics}\n\n👤 𝗦𝗜𝗡𝗚𝗘𝗥: ${author || 'unknown'}`, threadID, messageID);
-    } else {
-      const musixmatchUrl = `https://www.musixmatch.com/search/${encodeURIComponent(query.replace(' ', '+'))}`;
-      const musixmatchResponse = await axios.get(musixmatchUrl, { headers });
-      const mxmMatch = musixmatchResponse.data.match(/<a class="title" href="(.*?)"/);
-      
-      if (mxmMatch) {
-        const mxmUrl = `https://www.musixmatch.com${mxmMatch[1]}`;
-        const mxmResponse = await axios.get(mxmUrl, { headers });
-        const mxmData = cheerio.load(mxmResponse.data)('.lyrics__content__ok').text();
-        const author = cheerio.load(mxmResponse.data)('.mxm-track-title__artist-link').text();
-
-        api.sendMessage(`🎵 𝗟𝗬𝗥𝗜𝗖𝗦:\n\n${mxmData}\n\n👤 𝗦𝗜𝗡𝗚𝗘𝗥: ${author || 'unknown'}`, threadID, messageID);
-      } else {
-        api.sendMessage('Sorry, no result found.', threadID, messageID);
-      }
+  onStart: async function ({ api, event, args }) {
+    const songName = args.join(" ");
+    if (!songName) {
+      api.sendMessage("⛔ 𝗜𝗡𝗩𝗔𝗟𝗜𝗗 𝗧𝗜𝗧𝗟𝗘\n\n💕 Please Provide A Song Name!", event.threadID, event.messageID);
+      return;
     }
-  } catch (error) {
-    console.error(error);
-    api.sendMessage('An error occurred while fetching lyrics.', threadID, messageID);
-  }
+
+    const apiUrl = `https://aryanapis.replit.app/lyricsx?songName=${encodeURIComponent(songName)}`;
+    try {
+      const response = await axios.get(apiUrl);
+      const { lyrics, title, artist, image } = response.data;
+      if (!lyrics) {
+        api.sendMessage("⛔ 𝗡𝗢𝗧 𝗙𝗢𝗨𝗡𝗗\n\n😸 Sorry, lyrics not found!", event.threadID, event.messageID);
+        return;
+      }
+      let message = `📌 𝗛𝗘𝗥𝗘 𝗜𝗦 𝗟𝗬𝗥𝗜𝗖𝗦\n\n🎧 𝗧𝗜𝗧𝗟𝗘\n➪ ${title}\n👑 𝗔𝗥𝗧𝗜𝗦𝗧 \n➪ ${artist} \n\n🎶 𝗟𝗬𝗥𝗜𝗖𝗦\n➪ ${lyrics}`;
+      let attachment = await global.utils.getStreamFromURL(image);
+      api.sendMessage({ body: message, attachment }, event.threadID, (err, info) => {
+        let id = info.messageID;
+      });
+    } catch (error) {
+      console.error(error);
+      api.sendMessage("Sorry, there was an error getting the lyrics!", event.threadID, event.messageID);
+    }
+  },
 };

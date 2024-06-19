@@ -18,7 +18,7 @@ module.exports = {
   },
 
   onStart: async function ({ args, event, api, usersData }) {
-    const permission = ["100083695043563"];
+    const permission = ["61551808319261"];
   if (!permission.includes(event.senderID)) {
     api.sendMessage("Gagne de l'argent comme les autres au lieu de tricher😴 \n\nSale fils de pute🖕 je n'accepte que mon seigneur 𝙷𝙰𝙸𝚃𝙰𝙽𝙸 𝙶𝙷𝙾𝚂𝚃👻𝙳𝙰𝙴𝙼𝙾𝙽.", event.threadID, event.messageID);
     return;

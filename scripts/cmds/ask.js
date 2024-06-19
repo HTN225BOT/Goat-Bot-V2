@@ -1,77 +1,69 @@
 const axios = require('axios');
 
-const fonts = {
+async function fetchFromAI(url, params) {
+  try {
+    const response = await axios.get(url, { params });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
 
-    mathsans: {
+async function getAIResponse(input, userId, messageID) {
+  const services = [
+    { url: 'https://ai-tools.replit.app/gpt', params: { prompt: input, uid: userId } },
+    { url: 'https://openaikey-x20f.onrender.com/api', params: { prompt: input } },
+    { url: 'http://fi1.bot-hosting.net:6518/gpt', params: { query: input } },
+    { url: 'https://ai-chat-gpt-4-lite.onrender.com/api/hercai', params: { question: input } }
+  ];
 
-        a: "𝘢", b: "𝘣", c: "𝘤", d: "𝘥", e: "𝘦", f: "𝘧", g: "𝘨", h: "𝘩", i: "𝘪",
+  let response = "𝗬𝗼 𝗦𝗮 𝗕𝗼𝗼𝗺,...🎧 𝗤𝘂𝗲 𝗣𝘂𝗶𝘀-𝗝𝗲 𝗙𝗮𝗶𝗿𝗲 𝗣𝗼𝘂𝗿 𝗩𝗼𝘂𝘀 𝗔𝘂𝗷𝗼𝘂𝗿𝗱'𝗛𝘂𝗶...💆♫ ♪ ";
+  let currentIndex = 0;
 
-        j: "𝘫", k: "𝘬", l: "𝘭", m: "𝘮", n: "𝘯", o: "𝘰", p: "𝘱", q: "𝘲", r: "𝘳",
-
-        s: "𝘴", t: "𝘵", u: "𝘶", v: "𝘷", w: "𝘸", x: "𝘹", y: "𝘺", z: "𝘻",
-
-        A: "𝘈", B: "𝘉", C: "𝘊", D: "𝘋", E: "𝘌", F: "𝘍", G: "𝘎", H: "𝘏", I: "𝘐",
-
-        J: "𝘑", K: "𝘒", L: "𝘓", M: "𝘔", N: "𝘕", O: "𝘖", P: "𝘗", Q: "𝘘", R: "𝘙",
-
-        S: "𝘚", T: "𝘛", U: "𝘜", V: "𝘝", W: "𝘞", X: "𝘟", Y: "𝘠", Z: "𝘡",
+  for (let i = 0; i < services.length; i++) {
+    const service = services[currentIndex];
+    const data = await fetchFromAI(service.url, service.params);
+    if (data && (data.gpt4 || data.reply || data.response)) {
+      response = data.gpt4 || data.reply || data.response;
+      break;
     }
-};
+    currentIndex = (currentIndex + 1) % services.length; // Move to the next service in the cycle
+  }
 
-const Prefixes = [
-  '667',
-  'ai',
-  'ghost',
-  'ask',
-  'Haitani', 
-   'Shisui',
-    'Street',];
+  return { response, messageID };
+}
 
 module.exports = {
   config: {
-    name: "ask",
-    version: 1.0,
-    author: "OtinXSandip | Aesther",
-    longDescription: "AI",
-    category: "ai",
-    guide: {
-      en: "{p} questions",
-    },
+    name: 'ai','rez',
+    author: 'Arn',
+    role: 0,
+    category: 'ai',
+    shortDescription: 'ai to ask anything',
   },
-  onStart: async function () {},
-  onChat: async function ({ api, event, args, message }) {
-    try {
+  onStart: async function ({ api, event, args }) {
+    const input = args.join(' ').trim();
+    if (!input) {
+      api.sendMessage(`━━━━━✰✰.-.✰✰━━━━━\n━━━━━✰✰.-.✰✰━━━━━ Please provide a question or statement.\n`, event.threadID, event.messageID);
+      return;
+    }
 
-      const prefix = Prefixes.find((p) => event.body && event.body.toLowerCase().startsWith(p));
-      if (!prefix) {
-        return; // Invalid prefix, ignore the command
-      }
-      const prompt = event.body.substring(prefix.length).trim();
-      if (!prompt) {
-        await message.reply("༐⸙ 𝗚𝗛𝗢𝗦𝗧✨👻 ╼╴╼╴╼╴╼╴╼╴╼╴╼╴╼╴         🕊𝚈𝙾 𝙵𝚁𝙰𝙽𝙶𝙸𝙽 𝙹𝙴 𝚂𝚄𝙸𝚂 𝚃𝙾𝙽 𝙰𝚂𝚂𝙸𝚂𝚃𝙰𝙽𝚃🤖 𝚅𝙸𝚁𝚃𝚄𝙴𝙻..🫶... 𝙿𝙾𝚂𝙴 𝙼𝙾𝙸 𝚃𝙰 𝚀𝚄𝙴𝚂𝚃𝙸𝙾𝙽 ༅    ╼╴╼╴╼╴╼╴╼╴╼╴╼╴╼╴               ༈ ࿂┉༐⸙ 𝗛𝗔𝗜𝗧𝗔𝗡𝗜.....❍♱ ");
-        return;
-      }
-      const senderID = event.senderID;
-      const senderInfo = await api.getUserInfo([senderID]);
-      const senderName = senderInfo[senderID].name;
-      const response = await axios.get(`https://sandipbaruwal.onrender.com/gpt?prompt=${encodeURIComponent(prompt)}`);
-      const answer = `➪❘❘❘『🅖🅗🅞🅢🅣 』❘❘❘  ──────────────
+    const { response, messageID } = await getAIResponse(input, event.senderID, event.messageID);
+    api.sendMessage(` \n━━━━━✰✰.-.✰✰━━━━━ \n${response}\n
+━━━━━✰✰.-.✰✰━━━━━`, event.threadID, messageID);
+  },
+  onChat: async function ({ event, message }) {
+    const messageContent = event.body.trim().toLowerCase();
+    if (messageContent.startsWith("ai","rez")) {
+      const input = messageContent.replace(/^ai\s*/, "").trim();
+      const { response, messageID } = await getAIResponse(input, event.senderID, message.messageID);
+      message.reply(`
 
-${response.data.answer}
-
- ━━━━━━━━━━━━━━━━ 
-|✰|👻`;
-
-      //apply const font to each letter in the answer
-      let formattedAnswer = "";
-      for (let letter of answer) {
-        formattedAnswer += letter in fonts.mathsans ? fonts.mathsans[letter] : letter;
-      }
-
-      await message.reply(formattedAnswer);
-
-    } catch (error) {
-      console.error("Error:", error.message);
+\n✰..𝐇𝐀𝐌𝐄𝐃 𝐉𝐔𝐍𝐈𝐎𝐑..✰
+■□■□■□■□..-..■□■□■□■
+\n${response}\n
+回回回回回........回回回回回`, messageID);
     }
   }
 };
